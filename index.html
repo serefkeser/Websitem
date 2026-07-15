@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Şeref Keser — CIO & Yapay Zekâ Danışmanı</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A0E17;
+    --panel:#111827;
+    --panel-2:#161F30;
+    --line:#232E44;
+    --text:#E7ECF6;
+    --muted:#8A93AC;
+    --teal:#22E0C4;
+    --violet:#7C7CFF;
+    --teal-dim: rgba(34,224,196,0.14);
+    --violet-dim: rgba(124,124,255,0.14);
+    --grad: linear-gradient(120deg, var(--teal), var(--violet));
+    --font-display:'Space Grotesk', sans-serif;
+    --font-body:'Inter', sans-serif;
+    --font-mono:'JetBrains Mono', monospace;
+    --maxw: 1160px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--font-body);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background:
+      radial-gradient(circle at 15% 8%, rgba(124,124,255,0.10), transparent 40%),
+      radial-gradient(circle at 85% 15%, rgba(34,224,196,0.08), transparent 45%);
+    pointer-events:none;
+    z-index:0;
+  }
+  a{color:inherit; text-decoration:none;}
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 28px; position:relative; z-index:1;}
+  section{position:relative; z-index:1;}
+  h1,h2,h3{font-family:var(--font-display); letter-spacing:-0.01em;}
+  .eyebrow{
+    font-family:var(--font-mono);
+    font-size:12.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--teal);
+    display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{content:""; width:22px; height:1px; background:var(--teal); display:inline-block;}
+
+  /* ---------- NAV ---------- */
+  header{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    backdrop-filter:blur(14px);
+    background:rgba(10,14,23,0.72);
+    border-bottom:1px solid var(--line);
+  }
+  nav{
+    max-width:var(--maxw); margin:0 auto; padding:16px 28px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .logo{
+    font-family:var(--font-display); font-weight:700; font-size:18px;
+    display:flex; align-items:center; gap:9px;
+  }
+  .logo .dot{width:8px; height:8px; border-radius:50%; background:var(--grad); box-shadow:0 0 10px var(--teal);}
+  .navlinks{display:flex; gap:30px; font-size:14.5px; color:var(--muted);}
+  .navlinks a{transition:color .2s;}
+  .navlinks a:hover{color:var(--text);}
+  .nav-cta{
+    font-family:var(--font-mono); font-size:13px;
+    border:1px solid var(--teal); color:var(--teal);
+    padding:8px 16px; border-radius:100px;
+    transition:all .2s;
+  }
+  .nav-cta:hover{background:var(--teal); color:#04140f;}
+  .menu-btn{display:none; background:none; border:none; color:var(--text); font-size:22px; cursor:pointer;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    padding:170px 0 90px;
+    display:grid; grid-template-columns:1.05fr 1fr; gap:40px; align-items:center;
+  }
+  .hero h1{
+    font-size:clamp(34px, 4.6vw, 58px);
+    line-height:1.08;
+    font-weight:700;
+    margin:22px 0 22px;
+  }
+  .hero h1 .accent{
+    background:var(--grad);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .hero p.lead{
+    font-size:17px; color:var(--muted); max-width:520px; margin-bottom:34px;
+  }
+  .cta-row{display:flex; gap:14px; flex-wrap:wrap;}
+  .btn{
+    font-family:var(--font-mono); font-size:13.5px;
+    padding:14px 24px; border-radius:8px;
+    display:inline-flex; align-items:center; gap:8px;
+    transition:transform .2s, box-shadow .2s;
+  }
+  .btn-primary{background:var(--grad); color:#05100e; font-weight:500;}
+  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 8px 24px rgba(34,224,196,0.25);}
+  .btn-ghost{border:1px solid var(--line); color:var(--text);}
+  .btn-ghost:hover{border-color:var(--teal); color:var(--teal);}
+
+  .hero-visual{position:relative;}
+  .hero-visual svg{width:100%; height:auto; display:block;}
+  .node-label{font-family:var(--font-mono); font-size:10.5px; fill:var(--muted); letter-spacing:.02em;}
+  .node-label.core{fill:var(--text); font-size:12px; font-weight:600;}
+  .node-circle{fill:var(--panel-2); stroke:var(--line); stroke-width:1.4;}
+  .node-circle.legacy{stroke:var(--violet);}
+  .node-circle.output{stroke:var(--teal);}
+  .path-legacy{fill:none; stroke:var(--violet); stroke-opacity:0.25; stroke-width:1.2;}
+  .path-output{fill:none; stroke:var(--teal); stroke-opacity:0.25; stroke-width:1.2;}
+  .core-halo{fill:none; stroke:var(--teal); stroke-width:1; opacity:0.5;}
+  @media (prefers-reduced-motion: no-preference){
+    .core-halo{animation:pulse 2.6s ease-in-out infinite;}
+    .core-glow{animation:glow 2.6s ease-in-out infinite;}
+  }
+  @keyframes pulse{
+    0%{ r:58; opacity:0.55;}
+    70%{ r:82; opacity:0;}
+    100%{ r:82; opacity:0;}
+  }
+  @keyframes glow{
+    0%,100%{opacity:0.55;}
+    50%{opacity:0.9;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .data-packet{display:none;}
+  }
+
+  .stat-strip{
+    display:grid; grid-template-columns:repeat(4,1fr);
+    border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+    margin-top:60px;
+  }
+  .stat{padding:26px 20px; border-right:1px solid var(--line);}
+  .stat:last-child{border-right:none;}
+  .stat .num{font-family:var(--font-display); font-size:28px; font-weight:700; color:var(--teal);}
+  .stat .label{font-family:var(--font-mono); font-size:11.5px; color:var(--muted); margin-top:4px;}
+
+  /* ---------- SECTION GENERIC ---------- */
+  .section{padding:110px 0;}
+  .section-head{max-width:640px; margin-bottom:56px;}
+  .section-head h2{font-size:clamp(26px,3vw,38px); margin-top:16px; font-weight:700;}
+  .section-head p{color:var(--muted); margin-top:14px; font-size:15.5px;}
+
+  .reveal{opacity:0; transform:translateY(18px); transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in-view{opacity:1; transform:none;}
+  @media (prefers-reduced-motion: reduce){
+    .reveal{opacity:1; transform:none; transition:none;}
+  }
+
+  /* ---------- ABOUT ---------- */
+  .about-grid{display:grid; grid-template-columns:1.2fr 0.8fr; gap:60px; align-items:start;}
+  .about-text p{color:var(--muted); margin-bottom:16px; font-size:15.5px;}
+  .about-text strong{color:var(--text); font-weight:600;}
+  .about-side{
+    background:var(--panel); border:1px solid var(--line); border-radius:14px;
+    padding:26px;
+  }
+  .about-side .row{display:flex; justify-content:space-between; padding:11px 0; border-bottom:1px solid var(--line); font-size:14px;}
+  .about-side .row:last-child{border-bottom:none;}
+  .about-side .row span:first-child{color:var(--muted);}
+  .about-side .row span:last-child{font-family:var(--font-mono); font-size:13px;}
+
+  /* ---------- AI SERVICES ---------- */
+  .services-grid{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:20px;
+  }
+  .service-card{
+    background:var(--panel); border:1px solid var(--line); border-radius:14px;
+    padding:28px 24px; transition:border-color .25s, transform .25s;
+  }
+  .service-card:hover{border-color:var(--teal); transform:translateY(-4px);}
+  .service-card .icon{
+    width:40px; height:40px; border-radius:10px;
+    background:var(--teal-dim); border:1px solid var(--teal);
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom:18px; font-size:17px;
+  }
+  .service-card h3{font-size:16.5px; font-weight:600; margin-bottom:10px;}
+  .service-card p{font-size:14px; color:var(--muted);}
+
+  /* ---------- CORE COMPETENCY GRID ---------- */
+  .core-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:16px;}
+  .core-item{
+    border:1px solid var(--line); border-radius:12px; padding:20px;
+    background:var(--panel-2);
+  }
+  .core-item .tag{font-family:var(--font-mono); font-size:10.5px; color:var(--violet); letter-spacing:.05em; text-transform:uppercase;}
+  .core-item h4{font-size:15px; margin:10px 0 6px; font-weight:600;}
+  .core-item p{font-size:13px; color:var(--muted);}
+
+  /* ---------- TIMELINE ---------- */
+  .timeline{position:relative; margin-top:20px;}
+  .timeline::before{
+    content:""; position:absolute; left:110px; top:6px; bottom:6px; width:1px;
+    background:var(--line);
+  }
+  .tl-item{
+    display:grid; grid-template-columns:110px 1fr; gap:30px;
+    padding:26px 0; border-bottom:1px solid var(--line);
+    position:relative;
+  }
+  .tl-item:last-child{border-bottom:none;}
+  .tl-year{font-family:var(--font-mono); font-size:13px; color:var(--teal); padding-top:2px;}
+  .tl-item::after{
+    content:""; position:absolute; left:106px; top:31px; width:9px; height:9px;
+    border-radius:50%; background:var(--bg); border:2px solid var(--teal);
+  }
+  .tl-role h4{font-size:17px; font-weight:600;}
+  .tl-role .org{font-family:var(--font-mono); font-size:12.5px; color:var(--muted); margin:4px 0 10px;}
+  .tl-role p{font-size:14.5px; color:var(--muted); max-width:640px;}
+  .tl-item.featured .tl-role h4{color:var(--teal);}
+
+  /* ---------- CERTS ---------- */
+  .cert-grid{display:flex; flex-wrap:wrap; gap:12px;}
+  .cert-pill{
+    font-family:var(--font-mono); font-size:12.5px;
+    border:1px solid var(--line); border-radius:100px;
+    padding:9px 18px; color:var(--muted);
+  }
+  .cert-pill.on{border-color:var(--violet); color:var(--text);}
+
+  /* ---------- REFERENCES ---------- */
+  .ref-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:16px;}
+  .ref-card{
+    border:1px solid var(--line); border-radius:12px; padding:20px 22px;
+    background:var(--panel); display:flex; justify-content:space-between; align-items:center; gap:12px;
+  }
+  .ref-card .name{font-weight:600; font-size:15px;}
+  .ref-card .role{font-size:13px; color:var(--muted); margin-top:3px;}
+  .ref-card a{font-family:var(--font-mono); font-size:12px; color:var(--teal); white-space:nowrap;}
+
+  /* ---------- CONTACT ---------- */
+  .contact-box{
+    background:var(--panel); border:1px solid var(--line); border-radius:20px;
+    padding:60px; display:grid; grid-template-columns:1fr 1fr; gap:50px;
+    position:relative; overflow:hidden;
+  }
+  .contact-box::before{
+    content:""; position:absolute; top:-40%; right:-10%; width:400px; height:400px;
+    background:radial-gradient(circle, var(--teal-dim), transparent 70%);
+    pointer-events:none;
+  }
+  .contact-info h3{font-size:26px; margin-bottom:14px;}
+  .contact-info p{color:var(--muted); font-size:15px; margin-bottom:24px; max-width:400px;}
+  .contact-detail{display:flex; align-items:center; gap:12px; margin-bottom:14px; font-size:14.5px;}
+  .contact-detail .k{font-family:var(--font-mono); font-size:11.5px; color:var(--teal); width:74px; flex-shrink:0;}
+  form{display:flex; flex-direction:column; gap:14px; position:relative; z-index:1;}
+  form label{font-family:var(--font-mono); font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em;}
+  form input, form textarea, form select{
+    background:var(--bg); border:1px solid var(--line); border-radius:8px;
+    padding:12px 14px; color:var(--text); font-family:var(--font-body); font-size:14px;
+    outline:none; transition:border-color .2s;
+  }
+  form input:focus, form textarea:focus, form select:focus{border-color:var(--teal);}
+  form textarea{resize:vertical; min-height:90px;}
+  form button{
+    margin-top:6px; border:none; cursor:pointer;
+    background:var(--grad); color:#04140f; font-family:var(--font-mono); font-weight:600;
+    padding:14px; border-radius:8px; font-size:13.5px;
+  }
+
+  footer{
+    border-top:1px solid var(--line); padding:34px 0; margin-top:20px;
+    font-size:13px; color:var(--muted); display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;
+  }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:980px){
+    .hero{grid-template-columns:1fr; padding-top:140px;}
+    .hero-visual{order:-1;}
+    .stat-strip{grid-template-columns:repeat(2,1fr);}
+    .stat:nth-child(2){border-right:none;}
+    .about-grid{grid-template-columns:1fr;}
+    .services-grid{grid-template-columns:repeat(2,1fr);}
+    .core-grid{grid-template-columns:repeat(2,1fr);}
+    .contact-box{grid-template-columns:1fr; padding:40px 26px;}
+    .ref-grid{grid-template-columns:1fr;}
+  }
+  @media (max-width:640px){
+    .navlinks{display:none;}
+    .menu-btn{display:block;}
+    .services-grid, .core-grid{grid-template-columns:1fr;}
+    .stat-strip{grid-template-columns:1fr 1fr;}
+    .timeline::before{left:70px;}
+    .tl-item{grid-template-columns:70px 1fr; gap:16px;}
+    .tl-item::after{left:66px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <div class="logo"><span class="dot"></span>ŞEREF KESER</div>
+    <div class="navlinks">
+      <a href="#hakkimda">Hakkımda</a>
+      <a href="#ai-danismanlik">AI Danışmanlık</a>
+      <a href="#yetkinlikler">Yetkinlikler</a>
+      <a href="#deneyim">Deneyim</a>
+      <a href="#sertifikalar">Sertifikalar</a>
+    </div>
+    <a class="nav-cta" href="#iletisim">İletişime Geç</a>
+  </nav>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="hero wrap">
+  <div>
+    <div class="eyebrow">CIO · YAPAY ZEKÂ & DİJİTAL DÖNÜŞÜM DANIŞMANI</div>
+    <h1>30 yıl sistemleri kurdum.<br>Şimdi onlara <span class="accent">düşünmeyi öğretiyorum.</span></h1>
+    <p class="lead">Perakende, lojistik ve üretim sektörlerinde 30+ yıllık CIO deneyimimi; yapay zekâ destekli otomasyon, öngörücü analitik ve akıllı içerik üretimiyle birleştiriyorum. ERP'den RPA'ya, BI'dan üretken yapay zekâya — kurumunuzun dönüşümünü uçtan uca tasarlıyorum.</p>
+    <div class="cta-row">
+      <a href="#iletisim" class="btn btn-primary">Danışmanlık Talebi Gönder →</a>
+      <a href="#deneyim" class="btn btn-ghost">30 Yıllık Deneyimi İncele</a>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <svg viewBox="0 0 900 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Geleneksel BT sistemlerinden yapay zekâya veri akışını gösteren ağ diyagramı">
+      <!-- connecting paths: legacy -> core -->
+      <path id="p1" class="path-legacy" d="M115,95 Q290,150 445,255"/>
+      <path id="p2" class="path-legacy" d="M75,235 Q260,240 435,258"/>
+      <path id="p3" class="path-legacy" d="M115,375 Q280,330 440,268"/>
+      <path id="p4" class="path-legacy" d="M225,450 Q330,370 450,280"/>
+      <!-- connecting paths: core -> output -->
+      <path id="p5" class="path-output" d="M480,240 Q590,150 700,110"/>
+      <path id="p6" class="path-output" d="M492,258 Q620,255 770,250"/>
+      <path id="p7" class="path-output" d="M485,270 Q600,330 705,388"/>
+      <path id="p8" class="path-output" d="M470,282 Q550,380 610,455"/>
+
+      <!-- core halo + node -->
+      <circle class="core-halo" cx="460" cy="262" r="58"/>
+      <circle class="core-glow" cx="460" cy="262" r="46" fill="url(#coreGrad)" opacity="0.7"/>
+      <circle cx="460" cy="262" r="34" fill="#0e1726" stroke="url(#coreGrad)" stroke-width="2"/>
+      <text x="460" y="258" text-anchor="middle" class="node-label core">YAPAY</text>
+      <text x="460" y="272" text-anchor="middle" class="node-label core">ZEKÂ</text>
+
+      <defs>
+        <linearGradient id="coreGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#22E0C4"/>
+          <stop offset="1" stop-color="#7C7CFF"/>
+        </linearGradient>
+      </defs>
+
+      <!-- legacy nodes -->
+      <g>
+        <circle class="node-circle legacy" cx="110" cy="90" r="30"/>
+        <text x="110" y="87" text-anchor="middle" class="node-label">ERP</text>
+        <text x="110" y="99" text-anchor="middle" class="node-label">D365/Netsis</text>
+      </g>
+      <g>
+        <circle class="node-circle legacy" cx="70" cy="235" r="30"/>
+        <text x="70" y="232" text-anchor="middle" class="node-label">WAN &</text>
+        <text x="70" y="244" text-anchor="middle" class="node-label">Ağ Altyapısı</text>
+      </g>
+      <g>
+        <circle class="node-circle legacy" cx="110" cy="375" r="30"/>
+        <text x="110" y="372" text-anchor="middle" class="node-label">Depolama</text>
+        <text x="110" y="384" text-anchor="middle" class="node-label">(SAN)</text>
+      </g>
+      <g>
+        <circle class="node-circle legacy" cx="220" cy="450" r="30"/>
+        <text x="220" y="447" text-anchor="middle" class="node-label">Kurumsal</text>
+        <text x="220" y="459" text-anchor="middle" class="node-label">BI</text>
+      </g>
+
+      <!-- output nodes -->
+      <g>
+        <circle class="node-circle output" cx="705" cy="105" r="32"/>
+        <text x="705" y="101" text-anchor="middle" class="node-label">Süreç</text>
+        <text x="705" y="113" text-anchor="middle" class="node-label">Otomasyonu</text>
+      </g>
+      <g>
+        <circle class="node-circle output" cx="775" cy="248" r="32"/>
+        <text x="775" y="244" text-anchor="middle" class="node-label">Öngörücü</text>
+        <text x="775" y="256" text-anchor="middle" class="node-label">Analitik</text>
+      </g>
+      <g>
+        <circle class="node-circle output" cx="710" cy="390" r="32"/>
+        <text x="710" y="386" text-anchor="middle" class="node-label">İçerik &</text>
+        <text x="710" y="398" text-anchor="middle" class="node-label">Video Üretimi</text>
+      </g>
+      <g>
+        <circle class="node-circle output" cx="605" cy="460" r="32"/>
+        <text x="605" y="456" text-anchor="middle" class="node-label">Akıllı</text>
+        <text x="605" y="468" text-anchor="middle" class="node-label">Pazarlama</text>
+      </g>
+
+      <!-- travelling data packets -->
+      <circle r="3.4" fill="#7C7CFF" class="data-packet"><animateMotion dur="3.4s" begin="0s" repeatCount="indefinite"><mpath href="#p1"/></animateMotion></circle>
+      <circle r="3.4" fill="#7C7CFF" class="data-packet"><animateMotion dur="3.8s" begin="0.6s" repeatCount="indefinite"><mpath href="#p2"/></animateMotion></circle>
+      <circle r="3.4" fill="#7C7CFF" class="data-packet"><animateMotion dur="3.1s" begin="1.1s" repeatCount="indefinite"><mpath href="#p3"/></animateMotion></circle>
+      <circle r="3.4" fill="#7C7CFF" class="data-packet"><animateMotion dur="3.6s" begin="1.6s" repeatCount="indefinite"><mpath href="#p4"/></animateMotion></circle>
+      <circle r="3.4" fill="#22E0C4" class="data-packet"><animateMotion dur="3.2s" begin="0.3s" repeatCount="indefinite"><mpath href="#p5"/></animateMotion></circle>
+      <circle r="3.4" fill="#22E0C4" class="data-packet"><animateMotion dur="3.7s" begin="0.9s" repeatCount="indefinite"><mpath href="#p6"/></animateMotion></circle>
+      <circle r="3.4" fill="#22E0C4" class="data-packet"><animateMotion dur="3.3s" begin="1.4s" repeatCount="indefinite"><mpath href="#p7"/></animateMotion></circle>
+      <circle r="3.4" fill="#22E0C4" class="data-packet"><animateMotion dur="3.9s" begin="1.9s" repeatCount="indefinite"><mpath href="#p8"/></animateMotion></circle>
+    </svg>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="stat-strip reveal">
+    <div class="stat"><div class="num">30+</div><div class="label">YIL CIO / IT LİDERLİĞİ</div></div>
+    <div class="stat"><div class="num">20</div><div class="label">YIL — BAYDEMİRLER GRUBU CIO'SU</div></div>
+    <div class="stat"><div class="num">4</div><div class="label">ÜLKEDE KURUMSAL PROJE (TR·DE·EG·IR)</div></div>
+    <div class="stat"><div class="num">27K+</div><div class="label">LINKEDIN BAĞLANTISI</div></div>
+  </div>
+</div>
+
+<!-- ================= ABOUT ================= -->
+<section class="section wrap" id="hakkimda">
+  <div class="about-grid">
+    <div class="reveal">
+      <div class="eyebrow">HAKKIMDA</div>
+      <h2>Sunucu odasından yönetim kuruluna, şimdi de yapay zekâ masasına.</h2>
+      <div class="about-text" style="margin-top:24px;">
+        <p><strong>1998'den 2018'e</strong>, Baydemirler Tekstil Grubu'nda (Brillant) 20 yıl boyunca CIO olarak görev yaptım — ERP'den (Axapta/D365) sanallaştırmaya, WAN ve VOIP altyapısından e-ticaret ve mobil satış sistemlerine kadar grubun tüm dijital omurgasını kurdum. 42 sunucuyu 2'ye indiren sanallaştırma projesinden Almanya, Mısır ve İran'daki fabrika entegrasyonlarına kadar uçtan uca sorumluluk aldım.</p>
+        <p>2018'den itibaren <strong>bağımsız BT ve dijital dönüşüm danışmanlığına</strong> yöneldim; Setas Kimya ve Development Group gibi kurumlarda ERP, siber güvenlik, bulut ve BI projelerine liderlik ettim. Son dönemde odağım <strong>üretken yapay zekâ</strong>: otomatik içerik/video üretim hatlarından yapay zekâ destekli görsel üretimine, LLM tabanlı otomasyona kadar bizzat kod yazarak geliştirdiğim projelerle bu alanda pratik, saha deneyimi kazandım.</p>
+        <p>Bugün şirketlere sunduğum değer: <strong>30 yıllık kurumsal BT disiplinini, yapay zekânın getirdiği hız ve otomasyonla birleştirmek.</strong></p>
+      </div>
+    </div>
+    <div class="about-side reveal">
+      <div class="row"><span>Konum</span><span>İstanbul, Türkiye</span></div>
+      <div class="row"><span>Eğitim</span><span>Yıldız Teknik Üniv. — Matematik</span></div>
+      <div class="row"><span>Sertifikalar</span><span>PMP · CEH · ISO27001</span></div>
+      <div class="row"><span>Diller</span><span>TR (Ana Dil) · EN (Orta)</span></div>
+      <div class="row"><span>Sektörler</span><span>Perakende · Lojistik · Üretim</span></div>
+      <div class="row"><span>Uzmanlık</span><span>ERP · BI · Siber Güvenlik · AI</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= AI SERVICES ================= -->
+<section class="section wrap" id="ai-danismanlik" style="background:radial-gradient(ellipse at top, rgba(124,124,255,0.05), transparent 60%);">
+  <div class="section-head reveal">
+    <div class="eyebrow">DANIŞMANLIK ALANLARI</div>
+    <h2>Yapay zekâyı iş sonucuna dönüştürüyorum</h2>
+    <p>Her biri, 30 yıllık kurumsal BT deneyimimin üzerine kurulu; teorik değil, sahada uygulanmış çözümler.</p>
+  </div>
+  <div class="services-grid">
+    <div class="service-card reveal">
+      <div class="icon">⚙️</div>
+      <h3>AI Destekli Süreç Otomasyonu</h3>
+      <p>RPA'yı büyük dil modelleriyle birleştirerek, müşteri temsilcilerinin manuel olarak yaptığı tekrarlayan işleri otomatikleştiriyorum. Development Group'ta tasarladığım RPA yol haritasının yeni nesil versiyonu.</p>
+    </div>
+    <div class="service-card reveal">
+      <div class="icon">📊</div>
+      <h3>Öngörücü Analitik & İş Zekâsı</h3>
+      <p>QlikView ve Power BI ile kurduğum karar destek kültürünü, yapay zekâ destekli tahminleme ve anomali tespitiyle bir üst seviyeye taşıyorum.</p>
+    </div>
+    <div class="service-card reveal">
+      <div class="icon">🎬</div>
+      <h3>AI İçerik & Video Üretim Sistemleri</h3>
+      <p>Metinden otomatik seslendirme, görsel üretimi ve altyazı senkronizasyonuna kadar uçtan uca çalışan yapay zekâ video üretim hatları geliştiriyorum — bizzat kod yazarak.</p>
+    </div>
+    <div class="service-card reveal">
+      <div class="icon">💬</div>
+      <h3>Chatbot & CRM Otomasyonu</h3>
+      <p>Müşteri temsilcilerinin aynı bilgiyi birden fazla sisteme elle girmesini önleyen, sistemler arası veri akışını otomatikleştiren konuşma robotları.</p>
+    </div>
+    <div class="service-card reveal">
+      <div class="icon">📈</div>
+      <h3>AI Destekli Dijital Pazarlama</h3>
+      <p>Meta ekosistemi, Google Performance Max ve Amazon FBA/Buy Box optimizasyonunda yapay zekâ destekli kreatif ve hedefleme stratejileri.</p>
+    </div>
+    <div class="service-card reveal">
+      <div class="icon">🔐</div>
+      <h3>Siber Güvenlikte Yapay Zekâ</h3>
+      <p>ISO27001/GDPR uyumluluğunu, SIEM log analizinden yapay zekâ destekli anomali ve risk tespitine taşıyan güvenlik mimarileri.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CORE COMPETENCIES ================= -->
+<section class="section wrap" id="yetkinlikler">
+  <div class="section-head reveal">
+    <div class="eyebrow">TEMEL YETKİNLİKLER</div>
+    <h2>Yapay zekânın üzerine oturduğu altyapı</h2>
+    <p>30 yılda kurduğum, yönettiğim ve dönüştürdüğüm kurumsal BT temelleri.</p>
+  </div>
+  <div class="core-grid">
+    <div class="core-item reveal"><div class="tag">ERP</div><h4>Dynamics AX/D365, Netsis</h4><p>Satış, üretim, finans ve CRM'i tek çatı altında entegre etme.</p></div>
+    <div class="core-item reveal"><div class="tag">Bulut & Sanallaştırma</div><h4>Azure, Hyper-V, Citrix</h4><p>42 fiziksel sunucuyu 2'ye indiren sanallaştırma tecrübesi.</p></div>
+    <div class="core-item reveal"><div class="tag">Siber Güvenlik</div><h4>ISO27001, ISO27701, CEH</h4><p>Uçtan uca bilgi güvenliği yönetim sistemleri kurulumu.</p></div>
+    <div class="core-item reveal"><div class="tag">Proje & Bütçe</div><h4>PMP, Tedarikçi Yönetimi</h4><p>Çok uluslu proje planlama, bütçeleme ve sözleşme yönetimi.</p></div>
+    <div class="core-item reveal"><div class="tag">Kurumsal Ağ</div><h4>WAN, VOIP, SAN</h4><p>Mağaza-depo-merkez arası güvenli, ölçeklenebilir altyapı.</p></div>
+    <div class="core-item reveal"><div class="tag">İş Zekâsı</div><h4>QlikView, Power BI, Python</h4><p>Yönetim kararlarını veriyle besleyen raporlama kültürü.</p></div>
+    <div class="core-item reveal"><div class="tag">E-Ticaret</div><h4>B2B & B2C Ekosistemleri</h4><p>ERP ile gerçek zamanlı entegre çalışan e-ticaret altyapıları.</p></div>
+    <div class="core-item reveal"><div class="tag">Mobil & Saha</div><h4>iOS/Android, Tablet Satış</h4><p>Saha satış ekiplerini tablet ve mobil uygulamalarla donatma.</p></div>
+  </div>
+</section>
+
+<!-- ================= TIMELINE ================= -->
+<section class="section wrap" id="deneyim">
+  <div class="section-head reveal">
+    <div class="eyebrow">KARİYER ZAMAN ÇİZELGESİ</div>
+    <h2>1992'den bugüne</h2>
+    <p>Teknik destekten CIO'luğa, oradan yapay zekâ destekli danışmanlığa uzanan bir yol.</p>
+  </div>
+  <div class="timeline">
+    <div class="tl-item reveal">
+      <div class="tl-year">1992–1994</div>
+      <div class="tl-role"><h4>Teknik Servis Uzmanı</h4><div class="org">HEAT — İstanbul</div><p>Sözleşmeli müşteri portföyü için sistem kurulum ve destek hizmetleri.</p></div>
+    </div>
+    <div class="tl-item reveal">
+      <div class="tl-year">1994–1996</div>
+      <div class="tl-role"><h4>IT Teknik Müdür</h4><div class="org">Data Market — İstanbul</div><p>Novell ve Lotus Notes altyapılı kurumsal bakım, onarım ve kurulum projeleri.</p></div>
+    </div>
+    <div class="tl-item reveal">
+      <div class="tl-year">1996–1998</div>
+      <div class="tl-role"><h4>Sistem Destek Uzmanı</h4><div class="org">HEAT — İstanbul</div><p>Leasing şirketleri portföyünde sistem kurulum ve destek hizmetleri.</p></div>
+    </div>
+    <div class="tl-item featured reveal">
+      <div class="tl-year">1998–2018</div>
+      <div class="tl-role"><h4>CIO — 20 Yıl</h4><div class="org">Baydemirler Tekstil (Brillant) — İstanbul</div><p>ERP'den (Axapta/D365) sanallaştırmaya, WAN/VOIP'ten e-ticaret ve mobil satışa; Almanya, Mısır ve İran'daki fabrika/mağaza entegrasyonlarına kadar grubun tüm dijital altyapısının kurucusu ve yöneticisi.</p></div>
+    </div>
+    <div class="tl-item reveal">
+      <div class="tl-year">2018–2020</div>
+      <div class="tl-role"><h4>Bağımsız BT Danışmanı</h4><div class="org">İstanbul / Krefeld</div><p>ERP danışmanlığı, ağ konfigürasyonu, BI (QlikView/Power BI), RPA ve dijital yol haritası projeleri.</p></div>
+    </div>
+    <div class="tl-item reveal">
+      <div class="tl-year">2020</div>
+      <div class="tl-role"><h4>IT Danışmanı</h4><div class="org">Setas Kimya — Çerkezköy</div><p>D365, Azure, DevOps, Office 365 ve ISO27001 kapsamında bilgi güvenliği projeleri.</p></div>
+    </div>
+    <div class="tl-item reveal">
+      <div class="tl-year">2021</div>
+      <div class="tl-role"><h4>Bilgi Teknolojileri Direktörü</h4><div class="org">Development Group — Hadımköy</div><p>2 haftada tüm sistem envanteri çıkarma, Office 365 geçişi, ücretsiz Power BI raporlama kültürü kurma, SIEM/ağ güvenliği güçlendirme.</p></div>
+    </div>
+    <div class="tl-item featured reveal">
+      <div class="tl-year">2021–Bugün</div>
+      <div class="tl-role"><h4>Yapay Zekâ Odaklı Danışmanlık & Yazılım Geliştirme</h4><div class="org">Serbest — İstanbul</div><p>Üretken yapay zekâ, otomatik içerik/video üretim sistemleri ve AI destekli süreç otomasyonu üzerine bizzat kod yazarak proje geliştirme.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CERTIFICATIONS ================= -->
+<section class="section wrap" id="sertifikalar">
+  <div class="section-head reveal">
+    <div class="eyebrow">EĞİTİM & SERTİFİKALAR</div>
+    <h2>Sürekli öğrenme, sürekli sertifikasyon</h2>
+  </div>
+  <div class="cert-grid reveal">
+    <span class="cert-pill on">PMP — Project Management Professional</span>
+    <span class="cert-pill on">CEH — Certified Ethical Hacker</span>
+    <span class="cert-pill on">ISO 27001 — Bilgi Güvenliği</span>
+    <span class="cert-pill on">ISO 27701 — Gizlilik Yönetimi</span>
+    <span class="cert-pill on">GDPR-DPO</span>
+    <span class="cert-pill">M.Sc. Yönetim Bilişim Sistemleri</span>
+    <span class="cert-pill">Yıldız Teknik Üniversitesi — Matematik</span>
+    <span class="cert-pill">Profesyonel IT Proje Yöneticisi</span>
+  </div>
+</section>
+
+<!-- ================= REFERENCES ================= -->
+<section class="section wrap">
+  <div class="section-head reveal">
+    <div class="eyebrow">PROFESYONEL REFERANSLAR</div>
+    <h2>Birlikte çalıştığım isimler</h2>
+  </div>
+  <div class="ref-grid reveal">
+    <div class="ref-card">
+      <div><div class="name">Hasan Keser</div><div class="role">Technical Manager, ACM Airlines</div></div>
+      <a href="https://www.linkedin.com/in/hasan-keser-b9b87385/" target="_blank" rel="noopener">LinkedIn ↗</a>
+    </div>
+    <div class="ref-card">
+      <div><div class="name">Önder Karademir</div><div class="role">Head of IT & R&D — Strateji ve Dijital Dönüşüm</div></div>
+      <a href="https://www.linkedin.com/in/onderkarademir/" target="_blank" rel="noopener">LinkedIn ↗</a>
+    </div>
+    <div class="ref-card">
+      <div><div class="name">Eren Mert</div><div class="role">Founder, Medron Teknoloji (IoT)</div></div>
+      <a href="https://www.linkedin.com/in/erenmert/" target="_blank" rel="noopener">LinkedIn ↗</a>
+    </div>
+    <div class="ref-card">
+      <div><div class="name">Murat Yıldız</div><div class="role">Founder, CXO Media / Teknoloji Yayıncısı</div></div>
+      <a href="https://www.linkedin.com/in/murat-yildiz-cxo/" target="_blank" rel="noopener">LinkedIn ↗</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section class="section wrap" id="iletisim">
+  <div class="contact-box reveal">
+    <div class="contact-info">
+      <div class="eyebrow">İLETİŞİM</div>
+      <h3 style="margin-top:16px;">Dönüşüme yapay zekâyla başlayalım.</h3>
+      <p>İster ERP ve altyapı danışmanlığı, ister yapay zekâ destekli otomasyon — projenizi konuşmak için birkaç satır yazmanız yeterli.</p>
+      <div class="contact-detail"><span class="k">E-POSTA</span><span>seref.keser@gmail.com</span></div>
+      <div class="contact-detail"><span class="k">TELEFON</span><span>+90 532 501 47 37</span></div>
+      <div class="contact-detail"><span class="k">KONUM</span><span>Yakuplu, Beylikdüzü — İstanbul</span></div>
+      <div class="contact-detail"><span class="k">LINKEDIN</span><span>27.000+ bağlantı</span></div>
+    </div>
+    <form onsubmit="event.preventDefault(); window.location.href='mailto:seref.keser@gmail.com?subject=' + encodeURIComponent('Danışmanlık Talebi — ' + this.name.value) + '&body=' + encodeURIComponent(this.mesaj.value + '\n\nİletişim: ' + this.eposta.value);">
+      <div>
+        <label>Ad Soyad</label>
+        <input type="text" name="name" required placeholder="Adınız Soyadınız">
+      </div>
+      <div>
+        <label>E-posta</label>
+        <input type="email" name="eposta" required placeholder="ornek@sirket.com">
+      </div>
+      <div>
+        <label>İlgi Alanı</label>
+        <select name="konu">
+          <option>AI Destekli Süreç Otomasyonu</option>
+          <option>Öngörücü Analitik & BI</option>
+          <option>AI İçerik & Video Üretimi</option>
+          <option>Chatbot & CRM Otomasyonu</option>
+          <option>Dijital Pazarlama (AI)</option>
+          <option>ERP / Kurumsal BT Danışmanlığı</option>
+        </select>
+      </div>
+      <div>
+        <label>Mesajınız</label>
+        <textarea name="mesaj" placeholder="Projenizden kısaca bahsedin..."></textarea>
+      </div>
+      <button type="submit">Mesajı Gönder →</button>
+    </form>
+  </div>
+</section>
+
+<footer class="wrap">
+  <div>© 2026 Şeref Keser — CIO & Yapay Zekâ Danışmanı</div>
+  <div>İstanbul, Türkiye</div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const items = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.classList.add('in-view');
+        io.unobserve(e.target);
+      }
+    });
+  }, {threshold:0.12});
+  items.forEach(i=>io.observe(i));
+</script>
+
+</body>
+</html>
