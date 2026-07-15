@@ -262,20 +262,52 @@
   .contact-info p{color:var(--muted); font-size:15px; margin-bottom:24px; max-width:400px;}
   .contact-detail{display:flex; align-items:center; gap:12px; margin-bottom:14px; font-size:14.5px;}
   .contact-detail .k{font-family:var(--font-mono); font-size:11.5px; color:var(--teal); width:74px; flex-shrink:0;}
-  form{display:flex; flex-direction:column; gap:14px; position:relative; z-index:1;}
-  form label{font-family:var(--font-mono); font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em;}
-  form input, form textarea, form select{
-    background:var(--bg); border:1px solid var(--line); border-radius:8px;
-    padding:12px 14px; color:var(--text); font-family:var(--font-body); font-size:14px;
-    outline:none; transition:border-color .2s;
+  form{display:flex; flex-direction:column; gap:16px; position:relative; z-index:1;}
+  .form-row{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  .field{display:flex; flex-direction:column; gap:8px;}
+  form label{
+    font-family:var(--font-mono); font-size:10.5px; color:var(--muted);
+    text-transform:uppercase; letter-spacing:.08em;
+    display:flex; align-items:center; gap:6px;
   }
-  form input:focus, form textarea:focus, form select:focus{border-color:var(--teal);}
-  form textarea{resize:vertical; min-height:90px;}
+  form label svg{width:12px; height:12px; stroke:var(--violet); flex-shrink:0;}
+  form input, form textarea, form select{
+    background:var(--bg); border:1px solid var(--line); border-radius:9px;
+    padding:13px 15px; color:var(--text); font-family:var(--font-body); font-size:14px;
+    outline:none; transition:border-color .2s, box-shadow .2s;
+  }
+  form input::placeholder, form textarea::placeholder{color:#4C5776;}
+  form input:hover, form textarea:hover, form select:hover{border-color:#334063;}
+  form input:focus, form textarea:focus, form select:focus{
+    border-color:var(--teal); box-shadow:0 0 0 3px var(--teal-dim);
+  }
+  form textarea{resize:vertical; min-height:96px; font-family:var(--font-body);}
+  form select{
+    appearance:none; -webkit-appearance:none; cursor:pointer;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238A93AC' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 14px center; padding-right:38px;
+  }
   form button{
     margin-top:6px; border:none; cursor:pointer;
     background:var(--grad); color:#04140f; font-family:var(--font-mono); font-weight:600;
-    padding:14px; border-radius:8px; font-size:13.5px;
+    padding:15px; border-radius:9px; font-size:13.5px;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    transition:transform .2s, box-shadow .2s, opacity .2s;
   }
+  form button:hover{transform:translateY(-2px); box-shadow:0 10px 26px rgba(34,224,196,0.22);}
+  form button:disabled{opacity:0.65; cursor:default; transform:none; box-shadow:none;}
+  .form-note{font-size:12.5px; color:var(--muted); margin-top:-6px;}
+  .form-note a{color:var(--teal); text-decoration:underline; text-underline-offset:2px;}
+  .form-banner{
+    display:none; align-items:flex-start; gap:10px;
+    border-radius:9px; padding:12px 14px; font-size:13px; line-height:1.5;
+    border:1px solid var(--line); background:var(--panel-2);
+  }
+  .form-banner.show{display:flex;}
+  .form-banner svg{flex-shrink:0; margin-top:1px;}
+  .form-banner.success{border-color:rgba(34,224,196,0.4); background:var(--teal-dim); color:var(--teal);}
+  .form-banner.error{border-color:rgba(255,138,138,0.4); background:rgba(255,138,138,0.08); color:#ff8a8a;}
+  @media (max-width:640px){ .form-row{grid-template-columns:1fr;} }
 
   footer{
     border-top:1px solid var(--line); padding:34px 0; margin-top:20px;
@@ -661,16 +693,18 @@
       <div class="contact-detail"><span class="k">LINKEDIN</span><span>27.000+ bağlantı</span></div>
     </div>
     <form id="contactForm">
-      <div>
-        <label>Ad Soyad</label>
-        <input type="text" name="name" required placeholder="Adınız Soyadınız">
+      <div class="form-row">
+        <div class="field">
+          <label><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Ad Soyad</label>
+          <input type="text" name="name" required placeholder="Adınız Soyadınız">
+        </div>
+        <div class="field">
+          <label><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></svg>E-posta</label>
+          <input type="email" name="email" required placeholder="ornek@sirket.com">
+        </div>
       </div>
-      <div>
-        <label>E-posta</label>
-        <input type="email" name="email" required placeholder="ornek@sirket.com">
-      </div>
-      <div>
-        <label>İlgi Alanı</label>
+      <div class="field">
+        <label><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>İlgi Alanı</label>
         <select name="konu">
           <option>Süreç Otomasyonu</option>
           <option>Öngörücü analitik</option>
@@ -680,15 +714,16 @@
           <option>Kurumsal BT Yönetimi</option>
         </select>
       </div>
-      <div>
-        <label>Mesajınız</label>
+      <div class="field">
+        <label><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Mesajınız</label>
         <textarea name="message" placeholder="Projenizden kısaca bahsedin..."></textarea>
       </div>
-      <button type="submit" id="formSubmitBtn">Mesajı Gönder →</button>
-      <p id="formStatus" style="font-size:13px; color:var(--muted); margin-top:4px;"></p>
-      <p style="font-size:12.5px; color:var(--muted); margin-top:-4px;">
-        veya doğrudan <a href="mailto:seref.keser@gmail.com" style="color:var(--teal); text-decoration:underline;">seref.keser@gmail.com</a> adresine yazın.
-      </p>
+      <button type="submit" id="formSubmitBtn">
+        <span id="formBtnLabel">Mesajı Gönder</span>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </button>
+      <div id="formStatus" class="form-banner"></div>
+      <p class="form-note">veya doğrudan <a href="mailto:seref.keser@gmail.com">seref.keser@gmail.com</a> adresine yazın.</p>
     </form>
   </div>
 </section>
@@ -715,6 +750,15 @@
   const contactForm = document.getElementById('contactForm');
   const formStatus = document.getElementById('formStatus');
   const submitBtn = document.getElementById('formSubmitBtn');
+  const btnLabel = document.getElementById('formBtnLabel');
+
+  const ICON_CHECK = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
+  const ICON_WARN = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+
+  function showBanner(type, message){
+    formStatus.className = 'form-banner show ' + type;
+    formStatus.innerHTML = (type === 'success' ? ICON_CHECK : ICON_WARN) + '<span>' + message + '</span>';
+  }
 
   function sendViaMailto(form){
     const subject = encodeURIComponent('Danışmanlık Talebi — ' + form.name.value);
@@ -727,7 +771,8 @@
 
   contactForm.addEventListener('submit', function(e){
     e.preventDefault();
-    formStatus.textContent = '';
+    formStatus.className = 'form-banner';
+    formStatus.innerHTML = '';
 
     if(GOOGLE_FORM_ACTION.includes('YOUR_FORM_ID')){
       // Google Form henüz bağlanmadıysa mailto yedeğini kullan
@@ -736,7 +781,7 @@
     }
 
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Gönderiliyor...';
+    btnLabel.textContent = 'Gönderiliyor...';
 
     const params = new URLSearchParams();
     params.append(ENTRY_NAME, contactForm.name.value);
@@ -754,10 +799,9 @@
     }).catch(()=>{ /* no-cors zaten yanıtı gizler, hata olsa da sessiz geçiyoruz */ })
       .finally(()=>{
         contactForm.reset();
-        formStatus.textContent = 'Mesajınız gönderildi. En kısa sürede dönüş yapılacaktır.';
-        formStatus.style.color = 'var(--teal)';
+        showBanner('success', 'Mesajınız gönderildi. En kısa sürede dönüş yapılacaktır.');
         submitBtn.disabled = false;
-        submitBtn.textContent = 'Mesajı Gönder →';
+        btnLabel.textContent = 'Mesajı Gönder';
       });
   });
 </script>
